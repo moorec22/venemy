@@ -10,6 +10,7 @@ It's been awhile since I've updated this and things have changed over at Venmo. 
 
 # Venemy - Authenticated
 The authenticated module allows for much more data to be collected. This module requires an API token (available to all accounts, no additional signups). In order to set this up, perform the following:
+  - Copy the venmo.ini.example file to venmo.ini: `cp venmo.ini.example venmo.ini`.
   - Provide you username and password in the venmo.ini file
   - Use the `--auth` flag to invoke this process. You'll be prompted for a OTP and should receive a text message to your phone. Enter the code and press enter. You'll be issued an API key.
   - Take the API key and put it in your venmo.ini file. You're now ready to start using the authenticated options for venemy.
