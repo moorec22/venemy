@@ -1,5 +1,7 @@
 import requests, argparse, json, time, os, configparser
+from pprint import pprint
 from random import randint
+from venmo_api import Client
 from auth_api import AuthenticationApi
 from api_client import ApiClient
 from api_util import validate_access_token
@@ -23,50 +25,23 @@ args = parser.parse_args()
 config = configparser.ConfigParser()
 config.read('venmo.ini')
 
-#This class was written by mmohades - https://github.com/mmohades/Venmo
-class Client(object):
+def public_vars(obj):
+	"""
+	Returns all public fields of obj in a dictionary.
 
-    def __init__(self, access_token: str):
-        """
-        VenmoAPI Client
-        :param access_token: <str> Need access_token to work with the API.
-        """
-        super().__init__()
-        self.__access_token = validate_access_token(access_token=access_token)
-        self.__api_client = ApiClient(access_token=access_token)
-        self.user = UserApi(self.__api_client)
-        #self.__profile = self.user.get_my_profile()
-        #self.payment = PaymentApi(profile=self.__profile,api_client=self.__api_client)
+	A public field is a field that does not start with
+	an underscore.
+	"""
+	all_vars = vars(obj)
+	public_vars = {}
+	for k, v in all_vars.items():
+		if k[0] != '_':
+			public_vars[k] = v
+	return public_vars
 
-    def my_profile(self, force_update=False):
-        """
-        Get your profile info. It can be cached from the prev time.
-        :return:
-        """
-        if force_update:
-            self.__profile = self.user.get_my_profile(force_update=force_update)
-
-        return self.__profile
-
-    def get_access_token(username: str, password: str, device_id: str = None) -> str:
-        """
-        Log in using your credentials and get an access_token to use in the API
-        :param username: <str> Can be username, phone number (without +1) or email address.
-        :param password: <str> Account's password
-        :param device_id: <str> [optional] A valid device-id.
-        :return: <str> access_token
-        """
-        authn_api = AuthenticationApi(api_client=ApiClient(), device_id=device_id)
-        return authn_api.login_with_credentials_cli(username=username, password=password)
-
-    def log_out(access_token) -> bool:
-        """
-        Revoke your access_token. Log out, in other words.
-        :param access_token:
-        :return: <bool>
-        """
-        return AuthenticationApi.log_out(access_token=access_token)
-
+def get_token_client():
+	access_token = config['venmo.com']['api_token']
+	return Client(access_token=access_token)
 
 def no_auth(username):
 	url = 'https://venmo.com/{0}'.format(username)
@@ -97,17 +72,9 @@ def GetDataFromVenmo(url):
 
 #Grab Basic Info for User
 def GetBasicInfo(passed_user):
-	try:
-		url = 'https://api.venmo.com/v1/users/{0}'.format(passed_user)
-		response = GetDataFromVenmo(url)
-		print(response.json())
-		if response.status_code==200:
-			data = response.json()
-			return data['data']
-		elif response.status_code==400:
-			print("That user profile doesn't exist - make sure you have it right. If you're trying to find the profile of someone, use the brute force option first")
-	except:
-		 print(str(e))
+	user = get_token_client().user.get_user(passed_user)
+	pprint(public_vars(user))
+	return user
 
 #Grab the list of friends
 def GetFriendList(passed_user):	
@@ -213,20 +180,19 @@ if args.brute_force:
 
 #Get basic info on target profile
 if args.user:
-	user=args.user
-	dir_check(user)
-	info = GetBasicInfo(user) #Go find basic info of the target profile
-	if info:
+	user_id=args.user
+	dir_check(user_id)
+	user = GetBasicInfo(user_id) #Go find basic info of the target profile
+	if user:
+		info = public_vars(user)
 		with open(args.user+'.csv','w') as f:
 			id = info['id']
 			username = info['username']
 			display_name = info['display_name']
-			friends_count = info['friends_count']
 			phone = info['phone']
 			date_joined = info['date_joined']
-			email = info['email']
-			f.write("venmo_id,username,display_name,friends_count,phone,date_joined,email\n")
-			f.write("{0},{1},{2},{3},{4},{5},{6}".format(id,username,display_name,friends_count,phone,date_joined,email))
+			f.write("venmo_id,username,display_name,phone,date_joined\n")
+			f.write("{0},{1},{2},{3},{4}".format(id,username,display_name,phone,date_joined))
 			if "venmopics" in info['profile_picture_url'] or "facebook" in info['profile_picture_url']:
 					pic = info['profile_picture_url']
 					get_profile_pic(pic,info['username'])
@@ -305,33 +271,32 @@ if args.trans:
 
 #Do all the things for a target profile
 if args.all:
-	user=args.all
-	dir_check(user)
+	user_id=args.all
+	dir_check(user_id)
 	print("[+] Gathering User info...")
-	info = GetBasicInfo(user) #Go find basic info of the target profile
-	if info:
-		with open(user+'.csv','w') as f:
-			f.write("venmo_id,username,display_name,friends_count,phone,date_joined,email\n")
+	user = GetBasicInfo(user_id) #Go find basic info of the target profile
+	if user:
+		with open(user_id+'.csv','w') as f:
+			info = public_vars(user)
+			f.write("venmo_id,username,display_name,phone,date_joined\n")
 			id = info['id']
 			username = info['username']
 			display_name = info['display_name']
-			friends_count = info['friends_count']
 			phone = info['phone']
 			date_joined = info['date_joined']
-			email = info['email']
-			f.write("{0},{1},{2},{3},{4},{5},{6}".format(id,username,display_name,friends_count,phone,date_joined,email))
+			f.write("{0},{1},{2},{3},{4}".format(id,username,display_name,phone,date_joined))
 			if "venmopics" in info['profile_picture_url'] or "facebook" in info['profile_picture_url']:
 					pic = info['profile_picture_url']
 					get_profile_pic(pic,info['username'])
 	#Go find friends of the target profile
 	print("[+] Gathering friend info...")
-	info = GetFriendList(user)
+	info = GetFriendList(user_id)
 	if args.pics:
 		pic_flag=True
 	else:
 		pic_flag=False
 	if info:
-		with open(user + '_friends.csv','w') as f:
+		with open(user_id + '_friends.csv','w') as f:
 			f.write("fvalue,venmo_id,username,display_name,friends_count,phone,date_joined,email\n")
 			for friend in info:
 				fvalue = user
