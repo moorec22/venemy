@@ -1,5 +1,6 @@
 import requests, argparse, json, time, os, configparser
 from random import randint
+from venmo_api import Client
 from auth_api import AuthenticationApi
 from api_client import ApiClient
 from api_util import validate_access_token
@@ -22,50 +23,6 @@ args = parser.parse_args()
 #Grab our configurations from our .ini file
 config = configparser.ConfigParser()
 config.read('venmo.ini')
-
-#This class was written by mmohades - https://github.com/mmohades/Venmo
-class Client(object):
-
-    def __init__(self, access_token: str):
-        """
-        VenmoAPI Client
-        :param access_token: <str> Need access_token to work with the API.
-        """
-        super().__init__()
-        self.__access_token = validate_access_token(access_token=access_token)
-        self.__api_client = ApiClient(access_token=access_token)
-        self.user = UserApi(self.__api_client)
-        #self.__profile = self.user.get_my_profile()
-        #self.payment = PaymentApi(profile=self.__profile,api_client=self.__api_client)
-
-    def my_profile(self, force_update=False):
-        """
-        Get your profile info. It can be cached from the prev time.
-        :return:
-        """
-        if force_update:
-            self.__profile = self.user.get_my_profile(force_update=force_update)
-
-        return self.__profile
-
-    def get_access_token(username: str, password: str, device_id: str = None) -> str:
-        """
-        Log in using your credentials and get an access_token to use in the API
-        :param username: <str> Can be username, phone number (without +1) or email address.
-        :param password: <str> Account's password
-        :param device_id: <str> [optional] A valid device-id.
-        :return: <str> access_token
-        """
-        authn_api = AuthenticationApi(api_client=ApiClient(), device_id=device_id)
-        return authn_api.login_with_credentials_cli(username=username, password=password)
-
-    def log_out(access_token) -> bool:
-        """
-        Revoke your access_token. Log out, in other words.
-        :param access_token:
-        :return: <bool>
-        """
-        return AuthenticationApi.log_out(access_token=access_token)
 
 
 def no_auth(username):
