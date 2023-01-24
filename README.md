@@ -51,9 +51,9 @@ brew install pyenv pyenv-virtualenv
 echo 'eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
 source ~/.zshrc
-pyenv install 3.10.6
+pyenv install 3.8.5
 cd venemy
-pyenv virtualenv 3.10.6 venemy
+pyenv virtualenv 3.8.5 venemy
 pyenv local venemy
 pip install -r requirements.txt
 ```
