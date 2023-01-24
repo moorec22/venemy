@@ -44,6 +44,20 @@ If wanting to avoid creating an account, there's an option to use some HTML scra
 #### Brute-force for a profile - will try several variations of the person's name or suggested username (e.g. if they use they same username for multiple account/sites)
     python venemy.py --brute-force Person's name
 
+# Virtual Python Environment
+
+```
+brew install pyenv pyenv-virtualenv
+echo 'eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
+source ~/.zshrc
+pyenv install 3.10.6
+cd venemy
+pyenv virtualenv 3.10.6 venemy
+pyenv local venemy
+pip install -r requirements.txt
+```
+
 # Reference:
 [API Endpoints Guide](/reference/api_endpoints.md)
 
