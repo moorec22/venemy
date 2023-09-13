@@ -142,7 +142,7 @@ def output_user_info_file(user):
     dir_check(user)
     info = GetBasicInfo(user) #Go find basic info of the target profile
     if info:
-        with open(user+'.csv','w') as f:
+        with open(user + '.csv','w') as f:
             id = info['id']
             username = info['username']
             display_name = info['display_name']
@@ -161,12 +161,8 @@ def output_friends_file(user):
     #if user.isdigit() is not True: #If the user variable is username and not an internal ID code, go find the internal_id code
     #	user = GetInternalId(user)#Call function to get internal_Id and assign to user variable
     info = GetFriendList(user)
-    if args.pics:
-        pic_flag=True
-    else:
-        pic_flag=False
     if info:
-        with open(args.friends + '_friends.csv','w') as f:
+        with open(user + '_friends.csv','w') as f:
             f.write("fvalue,venmo_id,username,display_name,friends_count,phone,date_joined,email\n")
             for friend in info:
                 fvalue = user
@@ -178,10 +174,6 @@ def output_friends_file(user):
                 date_joined = friend['date_joined']
                 email = friend['email']
                 f.write("{0},{1},{2},{3},{4},{5},{6},{7}\n".format(fvalue,id,username,display_name,friends_count,phone,date_joined,email))
-                if pic_flag:
-                    if "venmopics" in friend['profile_picture_url'] or "facebook" in friend['profile_picture_url']:
-                        pic = friend['profile_picture_url']
-                        get_profile_pic(pic,friend['username'])
 
 def output_transactions_file(user):
     dir_check(user)
