@@ -64,10 +64,10 @@ def GetBasicInfo(passed_user):
 		elif response.status_code==400:
 			print("That user profile doesn't exist - make sure you have it right. If you're trying to find the profile of someone, use the brute force option first")
 	except:
-		 print(str(e))
+        print(str(e))
 
 #Grab the list of friends
-def GetFriendList(passed_user):	
+def GetFriendList(passed_user):
 	url = 'https://api.venmo.com/v1/users/{0}/friends?limit=1337'.format(passed_user)
 	response = GetDataFromVenmo(url)
 	data = response.json()
@@ -133,11 +133,9 @@ def get_profile_pic(pic,file_name):
 		#file_check(file_name+'.jpg')
 
 def dir_check(user):
-	if os.path.isdir('./'+user):
-		os.chdir(user)
-	else:
+	if !os.path.isdir('./'+user):
 		os.mkdir(user)
-		os.chdir(user)
+	os.chdir(user)
 
 def brute_force(username):
 	barray = []
