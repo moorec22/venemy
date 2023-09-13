@@ -5,6 +5,10 @@ from auth_api import AuthenticationApi
 from api_client import ApiClient
 from api_util import validate_access_token
 
+#Grab our configurations from our .ini file
+config = configparser.ConfigParser()
+config.read('venmo.ini')
+
 def no_auth(username):
     url = 'https://venmo.com/{0}'.format(username)
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
@@ -42,7 +46,7 @@ def GetBasicInfo(passed_user):
             return data['data']
         elif response.status_code==400:
             print("That user profile doesn't exist - make sure you have it right. If you're trying to find the profile of someone, use the brute force option first")
-    except:
+    except Exception as e:
         print(str(e))
 
 #Grab the list of friends
@@ -138,7 +142,7 @@ def output_user_info_file(user):
     dir_check(user)
     info = GetBasicInfo(user) #Go find basic info of the target profile
     if info:
-        with open(args.user+'.csv','w') as f:
+        with open(user+'.csv','w') as f:
             id = info['id']
             username = info['username']
             display_name = info['display_name']
