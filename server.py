@@ -9,3 +9,7 @@ def users(user: str):
 @app.get("/friends/{user}")
 def friends(user: str):
     output_friends_file(user)
+
+@app.get("/transactions/{user}")
+def transactions(user: str):
+    output_transactions_file(user)

@@ -182,7 +182,7 @@ def output_transactions_file(user):
     nurl = None
     trans,nurl = GetUserTransactions(user,nurl) #Go find transactions of the target profile
     if trans:
-        with open(args.trans+'_trans.csv','w') as f:
+        with open(user + '_trans.csv','w') as f:
             #f.write(str(trans))
             f.write("id,date_updated,app_used,payee,payor,item\n")
             for i in trans['data']:
@@ -201,7 +201,7 @@ def output_transactions_file(user):
         if nurl is None:
             break
         else:
-            with open(args.trans+'_trans.csv','a') as f:
+            with open(user + '_trans.csv','a') as f:
                 for i in data['data']:
                     try:
                         id = str(i['id'])
