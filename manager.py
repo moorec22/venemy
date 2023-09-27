@@ -139,7 +139,6 @@ def brute_force(username):
         time.sleep(1.5)
 
 def output_user_info_file(user):
-    dir_check(user)
     info = GetBasicInfo(user) #Go find basic info of the target profile
     if info:
         with open(user + '.csv','w') as f:
@@ -157,7 +156,6 @@ def output_user_info_file(user):
                 get_profile_pic(pic,info['username'])
 
 def output_friends_file(user):
-    dir_check(user)
     #if user.isdigit() is not True: #If the user variable is username and not an internal ID code, go find the internal_id code
     #	user = GetInternalId(user)#Call function to get internal_Id and assign to user variable
     info = GetFriendList(user)
@@ -176,11 +174,10 @@ def output_friends_file(user):
                 f.write("{0},{1},{2},{3},{4},{5},{6},{7}\n".format(fvalue,id,username,display_name,friends_count,phone,date_joined,email))
 
 def output_transactions_file(user):
-    dir_check(user)
     if user.isdigit() is not True: #If the user variable is username and not an internal ID code, go find the internal_id code
-        user = GetInternalId(user)#Call function to get internal_Id and assign to user variable
+        user_id = GetInternalId(user)#Call function to get internal_Id and assign to user variable
     nurl = None
-    trans,nurl = GetUserTransactions(user,nurl) #Go find transactions of the target profile
+    trans,nurl = GetUserTransactions(user_id,nurl) #Go find transactions of the target profile
     if trans:
         with open(user + '_trans.csv','w') as f:
             #f.write(str(trans))
@@ -216,12 +213,11 @@ def output_transactions_file(user):
         time.sleep(randint(1,5))
 
 def output_crawl_file(user):
-    dir_check(user)
     if user.isdigit() is not True:#If the user variable is username and not an internal ID code, go find the internal_id code
-        user = GetInternalId(user) #Call function to get internal_Id and assign to user variable
-    friends = GetFriendList(user)
+        user_id = GetInternalId(user) #Call function to get internal_Id and assign to user variable
+    friends = GetFriendList(user_id)
     if friends:
-        with open(args.crawl+'_foaf.csv','w') as f:
+        with open(user+'_foaf.csv','w') as f:
             f.write("fvalue,venmo_id,username,display_name,friends_count,phone,date_joined,email\n")
             for i in friends:
                 print("Fetching list for "+i['id'])
@@ -229,7 +225,7 @@ def output_crawl_file(user):
                 #print (foaf)
                 if foaf:
                     for friend in foaf:
-                        fvalue = user
+                        fvalue = user_id
                         id = friend['id']
                         username = friend['username']
                         display_name = friend['display_name']

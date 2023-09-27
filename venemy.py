@@ -37,29 +37,34 @@ if args.noauth:
 if args.brute_force:
     brute_force(args.brute_force)
 
+
 #Get basic info on target profile
 if args.user:
+    dir_check(args.user)
     output_user_info_file(args.user)
 
 #Get friends of target profile
 if args.friends:
+    dir_check(args.friends)
     output_friends_file(args.friends)
 
 #Get transactions of target profile
 if args.trans:
+    dir_check(args.trans)
     output_transactions_file(args.trans)
 
 #Do all the things for a target profile
 if args.all:
     user=args.all
+    dir_check(user)
     print("[+] Gathering User info...")
-    output_user_file(user)
+    output_user_info_file(user)
     #Go find friends of the target profile
     print("[+] Gathering friend info...")
     output_friends_file(user)
     #Go find transactions of target profile
     print("[+] Gathering transaction info...")
-    output_transactions_user(user)
+    output_transactions_file(user)
     print("[+] Done! Info located at " + os.getcwd())
 
 if args.crawl:
