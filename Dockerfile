@@ -12,5 +12,5 @@ RUN apt-get install -y python3 python3-pip
 RUN pip install uvicorn
 COPY . .
 RUN pip install -r requirements.txt
-EXPOSE 80
-CMD uvicorn server:app --workers 1 --host 0.0.0.0 --port 80
+EXPOSE 443
+CMD uvicorn server:app --workers 1 --host 0.0.0.0 --port 443

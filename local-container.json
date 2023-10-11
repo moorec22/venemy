@@ -2,14 +2,14 @@
     "serviceName": "venemy-server",
     "containers": {
         "venemy-server-container": {
-            "image": ":venemy-server.latest.5",
+            "image": ":venemy-server.latest.6",
             "ports": {
-                "80": "HTTP"
+                "443": "HTTP"
             }
         }
     },
     "publicEndpoint": {
         "containerName": "venemy-server-container",
-        "containerPort": 80
+        "containerPort": 443
     }
 }
