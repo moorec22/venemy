@@ -1,0 +1,15 @@
+{
+    "serviceName": "venemy-server",
+    "containers": {
+        "venemy-server-container": {
+            "image": ":venemy-server.latest.5",
+            "ports": {
+                "80": "HTTP"
+            }
+        }
+    },
+    "publicEndpoint": {
+        "containerName": "venemy-server-container",
+        "containerPort": 80
+    }
+}
